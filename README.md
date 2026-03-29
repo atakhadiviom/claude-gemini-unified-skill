@@ -9,7 +9,7 @@ Claude-Gemini Unified Skill is a high-performance orchestration layer for Claude
 
 * **Massive Token Savings**: Offload large file reads and multi-file tasks (>50k tokens) to Gemini to prevent Claude's context window from bloating.
 * **Context Superiority**: Utilize Gemini's 2M token window to analyze entire repositories or massive documentation sets that exceed Claude's native limits.
-* **Specialized Routing**: Automatically directs tasks to the most efficient model — Gemini CLI for content/planning, Gemini API for deep code reasoning.
+* **Specialized Routing**: Automatically directs tasks to the most efficient model — latest Gemini 3.x for power, Flash for speed.
 
 ## How It Works
 
@@ -42,7 +42,7 @@ git clone https://github.com/atakhadiviom/claude-gemini-unified-skill ~/.claude/
 chmod +x ~/.claude/skills/gemini/scripts/*.sh
 ```
 
-To enable the **Automatic Bridge** (auto-intercepts large tool calls), add to `~/.claude/settings.json`:
+To enable the **Automatic Bridge** (auto-intercepts large tool calls), install the bridge backend and add to `~/.claude/settings.json`:
 
 ```json
 {
@@ -55,46 +55,31 @@ To enable the **Automatic Bridge** (auto-intercepts large tool calls), add to `~
 }
 ```
 
-> The bridge backend is a separate project: [tkaufmann/claude-gemini-bridge](https://github.com/tkaufmann/claude-gemini-bridge)
+> Bridge backend: [tkaufmann/claude-gemini-bridge](https://github.com/tkaufmann/claude-gemini-bridge)
 
 ## Routing Table
 
 | Task Type | Path | Commands | Model |
 | :--- | :--- | :--- | :--- |
-| Writing, Planning, Docs, Proposals | Content | write task file → try_gemini.sh | pro |
-| Code Analysis, Review, Refactoring | gcop | `analyze`, `generate` | pro |
-| Git Diffs & Log Summarization | gcop | `diff`, `summarize` | flash |
-| Architectural Reasoning | gcop | `reason` | pro |
-| Codebase Q&A | gcop | `ask` | pro |
-| UI/UX Screenshot Audit | gcop | `vision` | pro |
-| Bulk File Operations | gcop | `bulk` | pro |
+| Writing, Planning, Docs, Proposals | Content | write task file → try_gemini.sh | gemini-3.1-pro-preview |
+| Code Analysis, Review, Refactoring | gcop | `analyze`, `generate` | gemini-3.1-pro-preview |
+| Git Diffs & Log Summarization | gcop | `diff`, `summarize` | gemini-3-flash-preview |
+| Architectural Reasoning | gcop | `reason` | gemini-3.1-pro-preview |
+| Codebase Q&A | gcop | `ask` | gemini-3.1-pro-preview |
+| UI/UX Screenshot Audit | gcop | `vision` | gemini-3.1-pro-preview |
+| Bulk File Operations | gcop | `bulk` | gemini-3-flash-preview |
 | Large reads / multi-file ops | Bridge | auto-intercepted | — |
 
-## Usage
+## Model Reference
 
-Claude Code will automatically invoke this skill for matching tasks. You can also trigger it directly via the skill system in Claude Code.
+| Model ID | Description |
+| :--- | :--- |
+| `gemini-3.1-pro-preview` | Latest — advanced intelligence, agentic coding (Preview) |
+| `gemini-3-flash-preview` | Fast — frontier-class performance at low cost (Preview) |
+| `gemini-2.5-pro` | Stable — deep reasoning and coding (Production) |
+| `gemini-2.5-flash` | Stable — best price-performance for high-volume tasks (Production) |
 
-**Content path** — Claude writes a structured task to `/tmp/gemini_task.txt` then runs:
-```bash
-bash ~/.claude/skills/gemini/scripts/try_gemini.sh /tmp/gemini_task.txt
-```
-
-**Code path** — Claude runs:
-```bash
-bash ~/.claude/skills/gemini/scripts/run_gcop.sh <command> [args]
-# Examples:
-bash ~/.claude/skills/gemini/scripts/run_gcop.sh analyze --file src/main.py --focus security
-git diff | bash ~/.claude/skills/gemini/scripts/run_gcop.sh diff
-bash ~/.claude/skills/gemini/scripts/run_gcop.sh reason "Explain the concurrency model in this codebase"
-```
-
-## Model Selection
-
-| Flag | Model | Best For |
-| :--- | :--- | :--- |
-| `--model pro` | Gemini Pro | Complex reasoning, code generation (default) |
-| `--model flash` | Gemini Flash | Fast summaries, simple diffs |
-| `--model 2.5-pro` | Gemini 2.5 Pro | Maximum reasoning depth |
+Use `--model <model-id>` to override the default in any gcop command.
 
 ## License
 
