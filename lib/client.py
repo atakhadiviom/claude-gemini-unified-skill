@@ -23,11 +23,12 @@ except ImportError:
 # Model aliases — same as original for compatibility
 MODELS = {
     "pro": "gemini-3.1-pro-preview",
-    "flash": "gemini-2.5-flash",
-    "flash-preview": "gemini-2.5-flash-preview",
+    "flash": "gemini-3-flash-preview",
+    "flash-preview": "gemini-3-flash-preview",
     "2.5-pro": "gemini-2.5-pro",
+    "2.5-flash": "gemini-2.5-flash",
 }
-DEFAULT_MODEL = "flash"
+DEFAULT_MODEL = "pro"
 
 # Kept for compatibility — thinking tiers are accepted but not applied via CLI
 THINKING_TIERS = {

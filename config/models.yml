@@ -40,7 +40,7 @@ models:
 
   # --- Flash tier: Fast, cheap, bulk operations ---
   flash:
-    id: "gemini-2.5-flash"
+    id: "gemini-3-flash-preview"
     context_window: 1048576
     max_output: 65536
     pricing:
