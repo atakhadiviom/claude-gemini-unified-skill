@@ -21,4 +21,4 @@ if [ ! -f "$GCOP_BIN" ]; then
     exit 1
 fi
 
-exec python3 "$GCOP_BIN" "$@"
+cd "$SKILL_ROOT" && exec python3 "$GCOP_BIN" "$@"
