@@ -84,3 +84,35 @@ Use `--model <model-id>` to override the default in any gcop command.
 ## License
 
 MIT
+
+---
+
+## When to Delegate to Gemini (and When Not To)
+
+Delegation is a scale-dependent optimization. Based on real-world benchmarks using this skill, delegating small tasks can actually increase costs due to the overhead of reading Gemini's output back into the primary agent's context.
+
+### Benchmark: Small Todo Web App (~2,200 output tokens)
+
+| Metric | Claude Sonnet (Standalone) | Gemini 3.1 Pro (Delegated) |
+| :--- | :--- | :--- |
+| Work Execution Cost | $0.039 | $0.022 |
+| Management Overhead | $0.000 | $0.228 |
+| **Total Session Cost** | **$0.039** | **$0.250** |
+| Execution Time | ~10 seconds | 446 seconds |
+
+### Decision Matrix
+
+| Task Type | Recommended | Rationale |
+| :--- | :--- | :--- |
+| Small edits (< 3 files) | Claude | Minimal overhead; significantly faster |
+| Interactive questions | Claude | Avoids 30-60s MCP startup latency |
+| Large analysis (10+ files) | Gemini | Leverages 2M token context window |
+| Long-form writing (blogs, docs) | Gemini | High output volume; low input prompt cost |
+| Complex refactoring / large diffs | Gemini | Handles multi-file ops that exceed Claude limits |
+| Pre-tool interception (bridge) | Gemini | Zero Claude overhead via PreToolUse hooks |
+
+> **Key Insight:** Delegation hurts on trivial tasks — costing up to **6x more** due to context synchronization overhead. Reserve Gemini for high-volume "deep work" or codebase-wide analysis where Claude's context limits or per-token costs become the bottleneck.
+
+### Performance Note
+
+The Gemini CLI initializes multiple MCP extensions on every call, adding 30-60 seconds of startup latency. This architecture is optimized for asynchronous background tasks and high-context processing — not rapid interactive queries.
