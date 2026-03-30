@@ -132,7 +132,7 @@ def route_model(task: str, content_size: int = 0, focus: str = "") -> str:
         return "pro"
     if content_size > 500_000:
         return "pro"
-    return "flash"
+    return "pro"
 
 
 def generate(
@@ -221,7 +221,7 @@ def generate(
                 text=True,
                 check=False,
                 env=env,
-                timeout=120,
+                timeout=300,
             )
             response_text = _strip_noise(result.stdout)
 
